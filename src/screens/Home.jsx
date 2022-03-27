@@ -1,7 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
 import { React, useState } from 'react';
 import {
-  StyleSheet, Text, View, TouchableOpacity, Button,
+  StyleSheet, Text, View, TouchableOpacity, Button, Alert,
 } from 'react-native';
 import Slider from '@react-native-community/slider';
 import RNPickerSelect from 'react-native-picker-select';
@@ -10,7 +10,7 @@ export default function Home(props) {
   const { navigation } = props;
   const [operation, setOperation] = useState('');
   const [difficulty, setDifficulty] = useState('1');
-  const [questions, setQuestions] = useState('');
+  const [questions, setQuestions] = useState('10');
   return (
     <View style={styles.container}>
       <View style={styles.lead}>
@@ -26,19 +26,24 @@ export default function Home(props) {
               { label: 'かけざん', value: 'multiplication' },
               { label: 'わりざん', value: 'division' },
             ]}
-            placeholder={{ label: '種類を選択' }}
+            placeholder={{ label: '種類を選択', value: null }}
+            style={{ inputAndroid: { color: 'black' } }}
+            useNativeAndroidPickerStyle={false}
           />
         </View>
         <View style={styles.questions}>
+          <Text>問題数：</Text>
           <RNPickerSelect
             onValueChange={(value) => setQuestions(value)}
+            placeholder={{}}
             items={[
               { label: '10問', value: 10 },
               { label: '20問', value: 20 },
               { label: '50問', value: 50 },
               { label: '100問', value: 100 },
             ]}
-            placeholder={{ label: '問題数を選択' }}
+            style={{ inputAndroid: { color: 'black' } }}
+            useNativeAndroidPickerStyle={false}
           />
         </View>
       </View>
@@ -70,17 +75,21 @@ export default function Home(props) {
           title="はじめる"
           color="#467FD3"
           onPress={() => {
-            navigation.reset({
-              index: 0,
-              routes: [{
-                name: 'Test',
-                params: {
-                  operation,
-                  questions,
-                  difficulty,
-                },
-              }],
-            });
+            if (operation === '') {
+              Alert.alert('種類を選択してください');
+            } else {
+              navigation.reset({
+                index: 0,
+                routes: [{
+                  name: 'Test',
+                  params: {
+                    operation,
+                    questions,
+                    difficulty,
+                  },
+                }],
+              });
+            }
           }}
         />
       </View>
